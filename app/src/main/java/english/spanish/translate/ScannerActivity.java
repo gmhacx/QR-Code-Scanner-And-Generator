@@ -1,15 +1,23 @@
 package english.spanish.translate;
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -18,19 +26,76 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import java.util.List;
+
 import english.spanish.translate.util.AnalyticsApplication;
+import pub.devrel.easypermissions.EasyPermissions;
 
-public class ScannerActivity extends AppCompatActivity {
+public class ScannerActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener{
 
+
+    private TextView resultTextView;
+    private QRCodeReaderView qrCodeReaderView;
+    private Button resetBTN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.scan_layout);
+        qrCodeInit();
         setTracker();
         setUpAds();
         setUpInteraction();
         setUpListeners();
+    }
+
+    private void qrCodeInit() {
+        qrCodeReaderView = (QRCodeReaderView) findViewById(R.id.qrdecoderview);
+
+        qrCodeReaderView.setOnQRCodeReadListener(ScannerActivity.this);
+
+        // Use this function to enable/disable decoding
+        qrCodeReaderView.setQRDecodingEnabled(true);
+
+        // Use this function to change the autofocus interval (default is 5 secs)
+        qrCodeReaderView.setAutofocusInterval(2000L);
+
+        // Use this function to enable/disable Torch
+        //qrCodeReaderView.setTorchEnabled(true);
+
+        // Use this function to set front camera preview
+        //qrCodeReaderView.setFrontCamera();
+
+        // Use this function to set back camera preview
+        qrCodeReaderView.setBackCamera();
+
+    }
+
+    @Override
+    public void onQRCodeRead(String text, PointF[] points) {
+        resultTextView.setText(text);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            qrCodeReaderView.startCamera();
+        }catch (Exception e){
+
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            qrCodeReaderView.startCamera();
+        }catch (Exception e){
+
+        }
     }
 
 
@@ -89,11 +154,17 @@ public class ScannerActivity extends AppCompatActivity {
     }
 
     private void setUpListeners() {
-
+        resetBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resultTextView.setText(R.string.scan_result);
+            }
+        });
     }
 
     private void setUpInteraction() {
-
+        resultTextView = (TextView) findViewById(R.id.resultTextView);
+        resetBTN = (Button) findViewById(R.id.resetBTN);
     }
 
 

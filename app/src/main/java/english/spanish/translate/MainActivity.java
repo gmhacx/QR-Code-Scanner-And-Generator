@@ -1,23 +1,31 @@
 package english.spanish.translate;
 
+import android.*;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import java.util.List;
+
 import english.spanish.translate.util.AnalyticsApplication;
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * Created by jiteshdugar on 9/17/17.
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
 
     Button scanBTN, genBTN;
 
@@ -29,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setUpInteraction();
         setUpListeners();
     }
+
 
     private void setUpInteraction() {
         scanBTN = (Button) findViewById(R.id.scanBTN);
@@ -54,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
         scanBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(MainActivity.this, ScannerActivity.class);
-                MainActivity.this.startActivity(myIntent);
+                readCameraPerm();
+
             }
         });
         genBTN.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +74,40 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.startActivity(myIntent);
             }
         });
+    }
+    private  void openScanIntent(){
+        Intent myIntent = new Intent(MainActivity.this, ScannerActivity.class);
+        MainActivity.this.startActivity(myIntent);
+    }
+    private static final int RC_CAMERA = 101;
+    public void readCameraPerm() {
+        String[] perms = {android.Manifest.permission.CAMERA};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            openScanIntent();
+        } else {
+            // Ask for both permissions
+            Log.d("else", "part");
+            EasyPermissions.requestPermissions(this, "Allow Camera Scanning?",
+                    RC_CAMERA, perms);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+// EasyPermissions handles the request result.
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        Log.d("", "onPermissionsGranted:" + requestCode + ":" + perms.size());
+        openScanIntent();
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        Log.d("", "onPermissionsDenied:" + requestCode + ":" + perms.size());
+        Toast.makeText(getApplicationContext(), "Permission is Compulsory to Proceed", Toast.LENGTH_SHORT).show();
     }
 
     private void actionRateUs() {

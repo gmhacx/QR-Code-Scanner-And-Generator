@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/PersonalInformationActivity_parentView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,35 +15,36 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
-
             <LinearLayout
                 android:id="@+id/converter_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:weightSum="1">
+                android:orientation="vertical">
 
-                <at.markushi.ui.CircleButton
-                    android:id="@+id/convertBTN"
-                    android:layout_width="84dp"
-                    android:layout_height="84dp"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:src="@drawable/ic_action_arrow_downward"
-                    android:textAlignment="center"
-                    app:cb_color="@color/accent"
-                    app:cb_pressedRingWidth="8dip" />
+                <com.dlazaro66.qrcodereaderview.QRCodeReaderView
+                    android:id="@+id/qrdecoderview"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp" />
 
-                <at.markushi.ui.CircleButton
-                    android:id="@+id/swapLanguage"
-                    android:layout_width="84dp"
-                    android:layout_height="84dp"
+                <Button
+                    android:id="@+id/resetBTN"
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
                     android:layout_gravity="center_horizontal|center_vertical"
-                    android:src="@drawable/ic_action_arrow_downward"
-                    android:textAlignment="center"
-                    app:cb_color="@color/accent"
-                    app:cb_pressedRingWidth="8dip" />
+                    android:text="@string/reset"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/resultTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="20dp"
+                    android:text="@string/scan_result"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:textStyle="normal" />
 
             </LinearLayout>
 
