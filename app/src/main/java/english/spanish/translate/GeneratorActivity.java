@@ -1,14 +1,27 @@
 package english.spanish.translate;
 
+import android.*;
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -18,15 +31,27 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import net.glxn.qrgen.android.QRCode;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.List;
+
 import english.spanish.translate.util.AnalyticsApplication;
+import pub.devrel.easypermissions.EasyPermissions;
 
-public class GeneratorActivity extends AppCompatActivity {
+public class GeneratorActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
 
+    EditText text;
+    Button genBTN;
+    ImageView myQRIMG, shareIMG;
+    TextView textV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.scan_layout);
+        setContentView(R.layout.generate_layout);
         setTracker();
         setUpAds();
         setUpInteraction();
@@ -59,6 +84,27 @@ public class GeneratorActivity extends AppCompatActivity {
         }
     }
 
+    Bitmap myBitmap;
+
+    private void setQrImage(ImageView imgView, String rd) {
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        /*VCard temp=new VCard(rd.toString())
+                .setEmail(rd)
+                .setAddress(rd)
+                .setTitle(rd)
+                .setCompany(rd)
+                .setPhoneNumber(rd);*/
+        String temp = rd;
+
+        myBitmap = QRCode.from(temp).bitmap();
+        Log.d("mybit",String.valueOf(myBitmap));
+        imgView.setImageBitmap(myBitmap);
+
+        textV.setText(rd);
+    }
+
     private void showIntAd() {
         if (getString(R.string.do_you_want_interstitial_ads).equalsIgnoreCase("Yes")) {
             if (mInterstitialAd.isLoaded()) {
@@ -89,33 +135,52 @@ public class GeneratorActivity extends AppCompatActivity {
     }
 
     private void setUpListeners() {
+        genBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
 
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+                setQrImage(myQRIMG, text.getText().toString());
+            }
+        });
+
+        shareIMG.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readWRPerm();
+            }
+        });
+    }
+
+    private  void shareMyQR(){
+        try {
+            final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(Intent.EXTRA_STREAM, getImageUri(getApplicationContext(),myBitmap));
+            intent.setType("image/png");
+            startActivity(Intent.createChooser(intent, "Share image via"));
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Unable To Share", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
     private void setUpInteraction() {
-
+        text = (EditText) findViewById(R.id.editText);
+        genBTN = (Button) findViewById(R.id.genBTN);
+        myQRIMG = (ImageView) findViewById(R.id.imageView);
+        shareIMG = (ImageView) findViewById(R.id.shareImg);
+        textV = (TextView) findViewById(R.id.textView);
     }
 
-
-    public boolean copyToClipboard(Context context, String text) {
-        try {
-            int sdk = android.os.Build.VERSION.SDK_INT;
-            if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-                android.text.ClipboardManager clipboard = (android.text.ClipboardManager) context
-                        .getSystemService(context.CLIPBOARD_SERVICE);
-                clipboard.setText(text);
-            } else {
-                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context
-                        .getSystemService(context.CLIPBOARD_SERVICE);
-                android.content.ClipData clip = android.content.ClipData
-                        .newPlainText("copy", text);
-                clipboard.setPrimaryClip(clip);
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -165,6 +230,36 @@ public class GeneratorActivity extends AppCompatActivity {
             startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())));
         }
+    }
+    private static final int RC_WRITE = 102;
+    public void readWRPerm() {
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            shareMyQR();
+        } else {
+            // Ask for both permissions
+            Log.d("else", "part");
+            EasyPermissions.requestPermissions(this, "Allow Storage Permission?",
+                    RC_WRITE, perms);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+// EasyPermissions handles the request result.
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        Log.d("", "onPermissionsGranted:" + requestCode + ":" + perms.size());
+        shareMyQR();
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        Log.d("", "onPermissionsDenied:" + requestCode + ":" + perms.size());
+        Toast.makeText(getApplicationContext(), "Permission is Compulsory to Proceed", Toast.LENGTH_SHORT).show();
     }
 
 

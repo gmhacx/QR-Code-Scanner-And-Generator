@@ -7,7 +7,9 @@
 
     <string name="scan_result">Scan Result Here</string>
     <string name="reset">Reset</string>
-
+    <string name="generate_hint">Type Text To Generate QR</string>
+    <string name="generate_hint_def">Click Generate to Convert</string>
+    <string name="tap_to_copy">Tap Below Text To Copy</string>
 
 
     <string name="share_subject">Hey, I found this amazing QR Code Scanner and Generator App.</string>
@@ -17,15 +19,15 @@
 
     <!-- Admob -->
 
-    <string name="do_you_want_banner_ads">No</string><!-- Type Yes/ No Case Insensitive -->
-    <string name="do_you_want_interstitial_ads">No</string><!-- Type Yes/ No Case Insensitive -->
+    <string name="do_you_want_banner_ads">Yes</string><!-- Type Yes/ No Case Insensitive -->
+    <string name="do_you_want_interstitial_ads">Yes</string><!-- Type Yes/ No Case Insensitive -->
 
-    <string name="YOUR_ADMOB_AD_ID">ca-app-pub-6553884734105254~3864394213</string>
-    <string name="YOUR_ADMOB_INT_AD_ID">ca-app-pub-6553884734105254/5833395081</string>
-    <string name="YOUR_ADMOB_BANNER_AD_ID">ca-app-pub-6553884734105254/4711885103</string>
+    <string name="YOUR_ADMOB_AD_ID">ca-app-pub-6553884734105254~1834224727</string>
+    <string name="YOUR_ADMOB_INT_AD_ID">ca-app-pub-6553884734105254/8208061383</string>
+    <string name="YOUR_ADMOB_BANNER_AD_ID">ca-app-pub-6553884734105254/8946427984</string>
 
     <!-- Analytics -->
-    <string name="YOUR_ANALYTICS_TRACKER_ID">UA-71837612-5</string>
+    <string name="YOUR_ANALYTICS_TRACKER_ID">UA-71837612-8</string>
 
 
 

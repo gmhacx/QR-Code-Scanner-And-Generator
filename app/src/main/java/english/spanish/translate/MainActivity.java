@@ -21,6 +21,8 @@ import java.util.List;
 import english.spanish.translate.util.AnalyticsApplication;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import static java.lang.Character.UnicodeBlock.of;
+
 /**
  * Created by jiteshdugar on 9/17/17.
  */
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         MainActivity.this.startActivity(myIntent);
     }
     private static final int RC_CAMERA = 101;
+
     public void readCameraPerm() {
         String[] perms = {android.Manifest.permission.CAMERA};
         if (EasyPermissions.hasPermissions(this, perms)) {
@@ -101,7 +104,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         Log.d("", "onPermissionsGranted:" + requestCode + ":" + perms.size());
-        openScanIntent();
+        if(requestCode == RC_CAMERA) {
+            openScanIntent();
+        }
     }
 
     @Override

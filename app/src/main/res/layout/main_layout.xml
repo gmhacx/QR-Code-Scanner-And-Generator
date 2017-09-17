@@ -27,6 +27,9 @@
                 android:weightSum="1">
 
                 <Button
+
+                    android:background="@color/primary"
+                    android:textColor="@color/white"
                     android:id="@+id/scanBTN"
                     android:layout_width="150dp"
                     android:layout_height="60dp"
@@ -35,6 +38,10 @@
                     android:textAlignment="center" />
 
                 <Button
+                    android:layout_marginTop="5dp"
+                    android:padding="5dp"
+                    android:background="@color/white"
+                    android:textColor="@color/primary"
                     android:id="@+id/generateBTN"
                     android:layout_width="150dp"
                     android:layout_height="60dp"

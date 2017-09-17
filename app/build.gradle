@@ -35,6 +35,11 @@ android {
         javaMaxHeapSize "4g"
         preDexLibraries = false
     }
+    repositories{
+        maven{
+            url "https://jitpack.io"
+        }
+    }
 }
 
 dependencies {
@@ -54,6 +59,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.google.android.gms:play-services-ads:9.0.0'
     compile 'com.dlazaro66.qrcodereaderview:qrcodereaderview:2.0.2'
+    compile 'com.github.kenglxn.QRGen:android:2.2.0'
     compile 'pub.devrel:easypermissions:0.1.5'
 }
 apply plugin: 'com.google.gms.google-services'

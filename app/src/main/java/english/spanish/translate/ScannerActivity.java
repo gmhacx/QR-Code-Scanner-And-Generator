@@ -160,6 +160,12 @@ public class ScannerActivity extends AppCompatActivity implements QRCodeReaderVi
                 resultTextView.setText(R.string.scan_result);
             }
         });
+        resultTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                copyToClipboard(getApplicationContext(),resultTextView.getText().toString());
+            }
+        });
     }
 
     private void setUpInteraction() {
@@ -182,6 +188,7 @@ public class ScannerActivity extends AppCompatActivity implements QRCodeReaderVi
                         .newPlainText("copy", text);
                 clipboard.setPrimaryClip(clip);
             }
+            Toast.makeText(getApplicationContext(),"Copied",Toast.LENGTH_SHORT).show();
             return true;
         } catch (Exception e) {
             return false;
