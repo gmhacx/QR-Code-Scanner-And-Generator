@@ -1,0 +1,29 @@
+<resources>
+
+
+    <string name="app_name">QR Scanner Generator</string>
+    <string name="scan">Scan</string>
+    <string name="generate">Generate</string>
+
+
+
+    <string name="share_subject">Hey, I found this amazing QR Code Scanner and Generator App.</string>
+
+    <!-- Firebase Notification Title -->
+    <string name="Notification_Title">QR Scanner Generator</string>
+
+    <!-- Admob -->
+
+    <string name="do_you_want_banner_ads">Yes</string><!-- Type Yes/ No Case Insensitive -->
+    <string name="do_you_want_interstitial_ads">Yes</string><!-- Type Yes/ No Case Insensitive -->
+
+    <string name="YOUR_ADMOB_AD_ID">ca-app-pub-6553884734105254~3864394213</string>
+    <string name="YOUR_ADMOB_INT_AD_ID">ca-app-pub-6553884734105254/5833395081</string>
+    <string name="YOUR_ADMOB_BANNER_AD_ID">ca-app-pub-6553884734105254/4711885103</string>
+
+    <!-- Analytics -->
+    <string name="YOUR_ANALYTICS_TRACKER_ID">UA-71837612-5</string>
+
+
+
+</resources>
